@@ -1,14 +1,18 @@
-
 import React from 'react';
-import './Column.css'; 
+import TaskCard from './TaskCard';
 
-function Column({ title, children }) {
+function Column({ title, tasks, onDragOver, onDrop, onDragStart }) {
   return (
-    <div className="kanban-column" style={{ border: '1px solid #ccc', margin: '10px', padding: '10px', width: '30%' }}>
+    <div
+      onDragOver={onDragOver}
+      onDrop={(e) => onDrop(e, title)}
+      style={{ border: '1px solid #ccc', margin: '10px', padding: '10px', width: '30%', minHeight: '300px', backgroundColor: '#f4f5f7' }}
+    >
       <h2>{title}</h2>
-      <div className="column-content">
-        {/* The Task Cards  will render inside here later */}
-        {children || <p>No tasks yet...</p>}
+      <div>
+        {tasks.map(task => (
+          <TaskCard key={task.id} task={task} onDragStart={onDragStart} />
+        ))}
       </div>
     </div>
   );
