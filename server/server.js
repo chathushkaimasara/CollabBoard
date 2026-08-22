@@ -3,7 +3,8 @@ const cors = require('cors');
 const http = require('http'); 
 const { Server } = require('socket.io'); 
 require('dotenv').config();
-
+const connectDB = require('./config/db');
+connectDB();
 const app = express();
 const server = http.createServer(app); 
 const PORT = process.env.PORT || 5000;
