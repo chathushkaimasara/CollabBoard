@@ -1,39 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import Column from './Column';
+import { saveTasksOffline, getTasksOffline } from '../utils/storage'; 
 
 const socket = io('http://localhost:5000');
 
 function Board() {
-  const [tasks, setTasks] = useState([ /* existing mock data */ ]);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
   
+    getTasksOffline().then((cachedTasks) => {
+      if (cachedTasks.length > 0) setTasks(cachedTasks);
+    });
+
+    fetch('http://localhost:5000/api/tasks')
+      .then((res) => res.json())
+      .then((data) => {
+        setTasks(data);
+        saveTasksOffline(data); 
+      })
+      .catch((err) => console.log('Offline: relying on IndexedDB cache.'));
+
+    
     socket.on('update_board', (updatedTask) => {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
+      setTasks((prevTasks) => {
+        const newTasks = prevTasks.map((task) =>
           task.id.toString() === updatedTask.taskId ? { ...task, status: updatedTask.newStatus } : task
-        )
-      );
+        );
+        saveTasksOffline(newTasks); 
+        return newTasks;
+      });
     });
 
     return () => socket.off('update_board');
   }, []);
 
-  const onDragStart = (e, id) => e.dataTransfer.setData('taskId', id);
-  const onDragOver = (e) => e.preventDefault();
+  
 
   const onDrop = (e, newStatus) => {
     const taskId = e.dataTransfer.getData('taskId');
     
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
+    setTasks(prevTasks => {
+      const newTasks = prevTasks.map(task =>
         task.id.toString() === taskId ? { ...task, status: newStatus } : task
-      )
-    );
+      );
+      
+      
+      saveTasksOffline(newTasks);
+      return newTasks;
+    });
 
     socket.emit('task_moved', { taskId, newStatus });
+    
+    
   };
+
 
 
   return (
