@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Login from './components/Login';
 import Board from './components/Board';
-import './App.css';
 
 function App() {
+  const [showLogin, setShowLogin] = useState(true); 
+
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>CollabBoard</h1>
-        <p>Your team's collaborative task workspace.</p>
-      </header>
-      
-      <main>
-        <Board />
-      </main>
+    <div className="App">
+      {showLogin ? (
+        <Login onLogin={() => setShowLogin(false)} />
+      ) : (
+        <Board /> 
+      )}
     </div>
   );
 }
 
 export default App;
+
 

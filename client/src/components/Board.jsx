@@ -25,17 +25,19 @@ function Board() {
     );
   };
 
+
   return (
-    <div className="kanban-board">
+    <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', padding: '20px', width: '100%', alignItems: 'flex-start' }}>
       {['To Do', 'Doing', 'Done'].map(status => (
-        <Column
-          key={status}
-          title={status}
-          tasks={tasks.filter(task => task.status === status)}
-          onDragStart={onDragStart}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-        />
+        <div key={status} style={{ flex: 1, minWidth: '250px' }}>
+          <Column
+            title={status}
+            tasks={tasks.filter(task => task.status === status)}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+          />
+        </div>
       ))}
     </div>
   );
