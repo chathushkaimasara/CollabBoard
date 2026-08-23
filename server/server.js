@@ -33,3 +33,5 @@ app.use('/api/tasks', require('./routes/taskRoutes'));
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
+
+app.use('/api/users', require('./routes/userRoutes'));
