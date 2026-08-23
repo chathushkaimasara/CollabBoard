@@ -52,7 +52,23 @@ function Board() {
     });
 
     socket.emit('task_moved', { taskId, newStatus });
-    
+
+    const updateTaskStatus = async (taskId, newStatus, taskVersion) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus, __v: taskVersion }) 
+    });
+
+    if (response.status === 409) {
+      alert('Someone else just updated this task! Refreshing your board to sync.');
+      window.location.reload(); 
+    }
+  } catch (error) {
+    console.error('Error updating task:', error);
+  }
+};
     
   };
 
