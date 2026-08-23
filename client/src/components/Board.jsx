@@ -1,81 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import React, { useState } from 'react';
 import Column from './Column';
-import { saveTasksOffline, getTasksOffline } from '../utils/storage'; 
-
-const socket = io('http://localhost:5000');
 
 function Board() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([
+    { id: 1, title: 'Set up UI', description: 'Create React scaffolding', status: 'Done' },
+    { id: 2, title: 'Kanban Columns', description: 'Build Board.jsx', status: 'Doing' },
+    { id: 3, title: 'Drag and Drop', description: 'Add HTML5 events', status: 'To Do' },
+  ]);
 
-  useEffect(() => {
-  
-    getTasksOffline().then((cachedTasks) => {
-      if (cachedTasks.length > 0) setTasks(cachedTasks);
-    });
+  const onDragStart = (e, id) => {
+    e.dataTransfer.setData('taskId', id);
+  };
 
-    fetch('http://localhost:5000/api/tasks')
-      .then((res) => res.json())
-      .then((data) => {
-        setTasks(data);
-        saveTasksOffline(data); 
-      })
-      .catch((err) => console.log('Offline: relying on IndexedDB cache.'));
-
-    
-    socket.on('update_board', (updatedTask) => {
-      setTasks((prevTasks) => {
-        const newTasks = prevTasks.map((task) =>
-          task.id.toString() === updatedTask.taskId ? { ...task, status: updatedTask.newStatus } : task
-        );
-        saveTasksOffline(newTasks); 
-        return newTasks;
-      });
-    });
-
-    return () => socket.off('update_board');
-  }, []);
-
-  
+  const onDragOver = (e) => {
+    e.preventDefault(); 
+  };
 
   const onDrop = (e, newStatus) => {
     const taskId = e.dataTransfer.getData('taskId');
-    
-    setTasks(prevTasks => {
-      const newTasks = prevTasks.map(task =>
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
         task.id.toString() === taskId ? { ...task, status: newStatus } : task
-      );
-      
-      
-      saveTasksOffline(newTasks);
-      return newTasks;
-    });
-
-    socket.emit('task_moved', { taskId, newStatus });
-
-    const updateTaskStatus = async (taskId, newStatus, taskVersion) => {
-  try {
-    const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus, __v: taskVersion }) 
-    });
-
-    if (response.status === 409) {
-      alert('Someone else just updated this task! Refreshing your board to sync.');
-      window.location.reload(); 
-    }
-  } catch (error) {
-    console.error('Error updating task:', error);
-  }
-};
-    
+      )
+    );
   };
 
-
-
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
+    <div className="kanban-board">
       {['To Do', 'Doing', 'Done'].map(status => (
         <Column
           key={status}
