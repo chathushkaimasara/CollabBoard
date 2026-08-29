@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/test', (req, res) => res.json({ message: 'Auth route working' }));
+router.get('/test', (req, res) => res.json({ message: 'Board route working' }));
 
 module.exports = router;
