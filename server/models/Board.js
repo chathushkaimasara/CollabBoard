@@ -13,7 +13,7 @@ const boardSchema = new mongoose.Schema({
   },
   columns: {
     type: [String],
-    default: ['To Do', 'Doing', 'Done'], // Default columns for SyncBoard
+    default: ['To Do', 'Doing', 'Done'],
   }
 }, { timestamps: true });
 
