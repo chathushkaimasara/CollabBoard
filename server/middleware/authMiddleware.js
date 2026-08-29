@@ -1,15 +1,24 @@
 const jwt = require('jsonwebtoken');
 
-const protect = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Not authorized, no token' });
+const protect = async (req, res, next) => {
+  let token;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token failed' });
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = { userId: decoded.userId };
+
+      next();
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+  } else {
+    res.status(401).json({ message: 'Not authorized, no token provided' });
   }
 };
+
 module.exports = { protect };
