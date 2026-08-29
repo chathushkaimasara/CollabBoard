@@ -12,4 +12,11 @@ router.route('/')
 router.route('/:id')
   .delete(deleteBoard);
 
+router.get('/test', (req, res) => {
+  res.json({
+    message: 'Protected Board route working',
+    userMakingRequest: req.user.userId,
+  });
+});
+
 module.exports = router;
