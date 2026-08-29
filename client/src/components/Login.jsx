@@ -1,20 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import authService from '../services/authService';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await authService.login(email, password);
+      alert('Login successful!');
+
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px' }}>
-      <div className="task-card" style={{ width: '400px', padding: '30px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Sign In to CollabBoard</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          <input type="email" placeholder="Email Address" />
-          <input type="password" placeholder="Password" />
-          <button onClick={onLogin}>Log In</button>
-          <p style={{ fontSize: '12px', textAlign: 'center', color: '#bbb' }}>
-            Need an account? Register here.
-          </p>
-        </div>
-      </div>
-    </div>
+    <form onSubmit={handleLogin}>
+      <h2>Login to SyncBoard</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      
+      <input 
+        type="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        placeholder="Email" 
+        required 
+      />
+      
+      <input 
+        type="password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)} 
+        placeholder="Password" 
+        required 
+      />
+      
+      <button type="submit">Log In</button>
+    </form>
   );
 };
 
