@@ -1,29 +1,25 @@
 const mongoose = require('mongoose');
 
-const taskSchema = mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: [true, 'Please add a task title'],
-    },
-    description: {
-      type: String,
-      required: false,
-    },
-    status: {
-      type: String,
-      enum: ['To Do', 'Doing', 'Done'],
-      default: 'To Do',
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: false, // Set to true once user registration is fully built
-      ref: 'User',
-    },
+const taskSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true,
   },
-  {
-    timestamps: true, // Automatically creates createdAt and updatedAt fields
+  description: {
+    type: String,
+    trim: true,
+  },
+  status: {
+    type: String,
+    required: true,
+    default: 'To Do',
+  },
+  boardId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Board',
+    required: true,
   }
-);
+}, { timestamps: true });
 
 module.exports = mongoose.model('Task', taskSchema);
