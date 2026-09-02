@@ -1,52 +1,40 @@
-# CollabBoard
+# CollabBoard (SyncBoard)
 
-A real-time collaborative task workspace built with the MERN stack (MongoDB, Express, React, Node.js) and Vite.
+A progressively built, real-time collaborative Kanban-style task workspace[span_4](start_span)[span_4](end_span). Built with the MERN stack (MongoDB, Express, React, Node.js) and Vite[span_5](start_span)[span_5](end_span).
 
-## 1. Prerequisites & Environment Setup
+## 1. Tech Stack & Architecture
 
-Ensure you have Node.js and MongoDB installed on your local machine before proceeding. You will also need to configure the backend environment variables. Create a `.env` file inside the root of the `server` directory and paste the following keys:
+* **Frontend:** React (scaffolded with Vite) organized into reusable components[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span).
+* **Backend:** Node.js and Express API following a strict `routes/controllers/models` architecture[span_8](start_span)[span_8](end_span).
+* **Database:** MongoDB via the Mongoose ODM[span_9](start_span)[span_9](end_span).
+* **Authentication:** JSON Web Tokens (JWT) for secure, protected routes[span_10](start_span)[span_10](end_span).
 
-`PORT=5000`
-`MONGO_URI=your_mongodb_connection_string_here`
-`JWT_SECRET=your_jwt_secret_key`
+## 2. Prerequisites & Environment Setup
 
-## 2. Installation & Running Locally
+Ensure you have Node.js and MongoDB installed on your local machine before proceeding[span_11](start_span)[span_11](end_span). You will also need to configure the backend environment variables. Create a `.env` file inside the root of the `server` directory and paste the following keys[span_12](start_span)[span_12](end_span):
 
-Follow these exact steps to initialize both the frontend and backend servers:
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string_here
+JWT_SECRET=your_jwt_secret_key
 
-1. Clone this repository and open the root folder in your terminal.
-2. Navigate to the backend using `cd server`, then run `npm install`.
-3. Start the Express API server by running `node server.js` (runs on port 5000).
-4. Open a second terminal window, navigate to the frontend using `cd client`, and run `npm install`.
-5. Start the React UI by running `npm run dev` (runs on port 5173).
+# CollabBoard (SyncBoard)
 
-## 3. Test Credentials
+A progressively built, real-time collaborative Kanban-style task workspace[span_4](start_span)[span_4](end_span). Built with the MERN stack (MongoDB, Express, React, Node.js) and Vite[span_5](start_span)[span_5](end_span).
 
-To bypass the registration flow and immediately evaluate the core drag-and-drop UI, use the following credentials on the main login screen:
+## 1. Tech Stack & Architecture
 
-* **Email:** test@collabboard.com
-* **Password:** admin123
+* **Frontend:** React (scaffolded with Vite) organized into reusable components[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span).
+* **Backend:** Node.js and Express API following a strict `routes/controllers/models` architecture[span_8](start_span)[span_8](end_span).
+* **Database:** MongoDB via the Mongoose ODM[span_9](start_span)[span_9](end_span).
+* **Authentication:** JSON Web Tokens (JWT) for secure, protected routes[span_10](start_span)[span_10](end_span).
 
-## 4. Project Contributors
+## 2. Prerequisites & Environment Setup
 
-This system was developed, designed, and maintained by our project team 
+Ensure you have Node.js and MongoDB installed on your local machine before proceeding[span_11](start_span)[span_11](end_span). You will also need to configure the backend environment variables. Create a `.env` file inside the root of the `server` directory and paste the following keys[span_12](start_span)[span_12](end_span):
 
-1.	WMC Imasara: UI/UX architecture, responsive design system, project management, and final report compilation.
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string_here
+JWT_SECRET=your_jwt_secret_key
 
-2.	Lakvinda Weerasinghe: Kanban Board layout and static Column React components.
-
-3.	KPKN Nethmira: Task Card UI, HTML5 drag-and-drop integration, and React authentication forms.
-
-4.  MMG Priyadarshana: Express REST API structure, JWT middleware, and User authentication controllers.
-
-5.  AWH Santhusa: Socket.io real-time WebSocket synchronization setup.
-
-6.	WGSJ Wijewardana: MongoDB database connection and Mongoose schema definitions.
-
-7.	ADEN Jayarathna: Client-side offline persistence using IndexedDB.
-
-8.	OAWS Ogodapola: Optimistic concurrency control and version-conflict detection logic.
-
-9.  Galgamuwa Galgamuwa : API route integrations and state management.
-
-10.	DACM Daranagama: Docker containerization and environment configuration.

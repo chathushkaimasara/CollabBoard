@@ -17,6 +17,19 @@ const getTasks = async (boardId) => {
   return response.json();
 };
 
+const createTask = async (taskData) => {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: getAuthHeader(),
+    body: JSON.stringify(taskData),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to create task');
+  }
+  return response.json();
+};
+
 const moveTask = async (taskId, newStatus) => {
   const response = await fetch(API_URL + taskId, {
     method: 'PUT',
@@ -27,4 +40,15 @@ const moveTask = async (taskId, newStatus) => {
   return response.json();
 };
 
-export default { getTasks, moveTask };
+const deleteTask = async (taskId) => {
+  const response = await fetch(API_URL + taskId, {
+    method: 'DELETE',
+    headers: getAuthHeader(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to delete task');
+  }
+  return response.json();
+};
+export default { getTasks, createTask, moveTask, deleteTask };
