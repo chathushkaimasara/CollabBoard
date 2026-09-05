@@ -15,10 +15,11 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.7.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.4",
+    "mongoose": "^9.9.5",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {

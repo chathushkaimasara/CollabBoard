@@ -3,23 +3,24 @@ const mongoose = require('mongoose');
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
-    trim: true,
+    required: [true, 'Please add a task title']
   },
   description: {
     type: String,
-    trim: true,
+    default: ''
   },
   status: {
     type: String,
-    required: true,
-    default: 'To Do',
+    enum: ['To Do', 'Doing', 'Done'],
+    default: 'To Do'
   },
   boardId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Board',
     required: true,
+    ref: 'Board' 
   }
-}, { timestamps: true });
+}, {
+  timestamps: true
+});
 
 module.exports = mongoose.model('Task', taskSchema);
