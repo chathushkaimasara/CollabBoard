@@ -1,20 +1,18 @@
 const mongoose = require('mongoose');
 
 const boardSchema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
-    required: true,
-    trim: true,
+    required: [true, 'Please add a board name'],
+    default: 'My SyncBoard'
   },
-  owner: {
+  ownerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
     required: true,
-  },
-  columns: {
-    type: [String],
-    default: ['To Do', 'Doing', 'Done'],
+    ref: 'User' 
   }
-}, { timestamps: true });
+}, {
+  timestamps: true 
+});
 
 module.exports = mongoose.model('Board', boardSchema);
