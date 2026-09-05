@@ -1,24 +1,28 @@
-import localforage from 'localforage';
 
-localforage.config({
-  name: 'CollabBoard',
-  storeName: 'tasks_cache'
-});
-
-export const saveTasksOffline = async (tasks) => {
+export const saveTasksToCache = (boardId, tasks) => {
   try {
-    await localforage.setItem('offline_tasks', tasks);
-  } catch (err) {
-    console.error('Failed to save tasks to IndexedDB:', err);
+    const serializedTasks = JSON.stringify(tasks);
+    localStorage.setItem(`syncboard_tasks_${boardId}`, serializedTasks);
+  } catch (error) {
+    console.error('Could not save tasks to cache', error);
   }
 };
 
-export const getTasksOffline = async () => {
+export const loadTasksFromCache = (boardId) => {
   try {
-    const tasks = await localforage.getItem('offline_tasks');
-    return tasks || [];
-  } catch (err) {
-    console.error('Failed to load tasks from IndexedDB:', err);
-    return [];
+    const cachedTasks = localStorage.getItem(`syncboard_tasks_${boardId}`);
+    if (cachedTasks === null) return undefined;
+    return JSON.parse(cachedTasks);
+  } catch (error) {
+    console.error('Could not load tasks from cache', error);
+    return undefined;
+  }
+};
+
+export const clearBoardCache = (boardId) => {
+  try {
+    localStorage.removeItem(`syncboard_tasks_${boardId}`);
+  } catch (error) {
+    console.error('Could not clear board cache', error);
   }
 };
