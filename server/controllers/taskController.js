@@ -35,25 +35,29 @@ const createTask = async (req, res) => {
 
 const moveTask = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, version } = req.body;
     
-   
-    const updatedTask = await Task.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
+    const task = await Task.findById(req.params.id);
 
-    if (!updatedTask) {
+    if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
+
+    if (version !== undefined && task.__v !== version) {
+      return res.status(409).json({ 
+        message: 'Conflict: This task was modified by another user.',
+        currentTask: task 
+      });
+    }
+
+    task.status = status;
+    const updatedTask = await task.save();
 
     res.status(200).json(updatedTask);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const deleteTask = async (req, res) => {
   try {
