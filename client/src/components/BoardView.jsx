@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import boardService from '../services/boardService';
 import taskService from '../services/taskService';
 import Column from './Column';
+import { saveTasksToCache, loadTasksFromCache } from '../utils/storage';
 
 const BoardView = () => {
   const [boards, setBoards] = useState([]);
@@ -30,9 +31,28 @@ const BoardView = () => {
 
   useEffect(() => {
     if (activeBoard) {
-      taskService.getTasks(activeBoard).then(setTasks).catch(console.error);
+      taskService.getTasks(activeBoard)
+        .then(fetchedTasks => {
+          setTasks(fetchedTasks);
+          saveTasksToCache(activeBoard, fetchedTasks); 
+        })
+        .catch(error => {
+          console.error('Failed to fetch from server, checking cache:', error);
+          
+          const cachedTasks = loadTasksFromCache(activeBoard);
+          if (cachedTasks) {
+            setTasks(cachedTasks);
+          }
+        });
     }
   }, [activeBoard]);
+
+  
+  useEffect(() => {
+    if (activeBoard && tasks.length >= 0) {
+      saveTasksToCache(activeBoard, tasks);
+    }
+  }, [tasks, activeBoard]);
 
   const onDragStart = (e, id) => {
     e.dataTransfer.setData('taskId', id);
