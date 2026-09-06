@@ -30,13 +30,21 @@ const createTask = async (taskData) => {
   return response.json();
 };
 
-const moveTask = async (taskId, newStatus) => {
+const moveTask = async (taskId, newStatus, version) => {
   const response = await fetch(API_URL + taskId, {
     method: 'PUT',
     headers: getAuthHeader(),
-    body: JSON.stringify({ status: newStatus }),
+    body: JSON.stringify({ status: newStatus, version }), 
   });
-  if (!response.ok) throw new Error('Failed to move task');
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw { 
+      status: response.status, 
+      message: errorData.message || 'Failed to move task',
+      currentTask: errorData.currentTask 
+    };
+  }
   return response.json();
 };
 
