@@ -9,7 +9,7 @@ const getBoards = async (req, res) => {
   }
 };
 
-// Create a new board
+
 const createBoard = async (req, res) => {
   try {
     const { name } = req.body;
@@ -25,6 +25,11 @@ const createBoard = async (req, res) => {
       name, 
       ownerId 
     });
+
+
+if (!name) {
+  return res.status(400).json({ message: "Board name is required" });
+}
 
     res.status(201).json(newBoard);
   } catch (error) {
