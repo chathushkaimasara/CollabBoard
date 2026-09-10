@@ -3,14 +3,12 @@ const Board = require('../models/Board');
 
 const getTasks = async (req, res) => {
   try {
-   
     const tasks = await Task.find({ boardId: req.params.boardId });
     res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const createTask = async (req, res) => {
   try {
@@ -26,6 +24,11 @@ const createTask = async (req, res) => {
       status: status || 'To Do',
       boardId
     });
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('taskCreated', task);
+    }
 
     res.status(201).json(task);
   } catch (error) {
@@ -53,6 +56,12 @@ const moveTask = async (req, res) => {
     task.status = status;
     const updatedTask = await task.save();
 
+  
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('taskUpdated', updatedTask);
+    }
+
     res.status(200).json(updatedTask);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -65,6 +74,11 @@ const deleteTask = async (req, res) => {
     
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
+    }
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('taskDeleted', { id: req.params.id, boardId: task.boardId });
     }
 
     res.status(200).json({ id: req.params.id, message: 'Task deleted successfully' });
