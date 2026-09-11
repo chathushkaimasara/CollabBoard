@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import Column from './Column';
+import io from 'socket.io-client'; // 1. Import socket.io
+
+const socket = io('http://localhost:5000'); 
 
 function Board() {
   const [tasks, setTasks] = useState([
@@ -8,6 +11,28 @@ function Board() {
     { id: 3, title: 'Drag and Drop', description: 'Add HTML5 events', status: 'To Do' },
     { id: 4, title: 'API Integration', description: 'Wire up the endpoints', status: 'To Do' },
   ]);
+
+  useEffect(() => {
+    socket.on('taskCreated', (newTask) => {
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    });
+
+    socket.on('taskUpdated', (updatedTask) => {
+      setTasks((prevTasks) => 
+        prevTasks.map((task) => ((task._id || task.id) === (updatedTask._id || updatedTask.id) ? updatedTask : task))
+      );
+    });
+
+    socket.on('taskDeleted', ({ id }) => {
+      setTasks((prevTasks) => prevTasks.filter((task) => (task._id || task.id) !== id));
+    });
+
+    return () => {
+      socket.off('taskCreated');
+      socket.off('taskUpdated');
+      socket.off('taskDeleted');
+    };
+  }, []);
 
   const onDragStart = (e, id) => {
     e.dataTransfer.setData('taskId', id);
@@ -19,11 +44,13 @@ function Board() {
 
   const onDrop = (e, newStatus) => {
     const taskId = e.dataTransfer.getData('taskId');
+
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id.toString() === taskId ? { ...task, status: newStatus } : task
+        task.id.toString() === taskId || task._id?.toString() === taskId ? { ...task, status: newStatus } : task
       )
     );
+    
   };
 
   const handleDeleteTask = async (taskId) => {
@@ -31,8 +58,6 @@ function Board() {
 
     try {
       await taskService.deleteTask(taskId);
-
-      setTasks(prevTasks => prevTasks.filter(t => (t._id || t.id) !== taskId));
     } catch (error) {
       console.error('Failed to delete task:', error);
       alert('Could not delete task: ' + error.message);
@@ -68,7 +93,6 @@ function Board() {
             />
           ))}
         </div>
-        
         
       </div>
     </div>
