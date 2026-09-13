@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: syncboard-api
+    env: docker
+    dockerfilePath: ./server/Dockerfile
+    rootDir: ./server
