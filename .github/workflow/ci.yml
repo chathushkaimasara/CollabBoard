@@ -1,4 +1,4 @@
-name: Node.js CI
+name: SyncBoard CI Pipeline
 
 on:
   push:
@@ -7,21 +7,29 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18.x'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install Dependencies
-      run: npm install
+      - name: Install and Test Backend
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: supersecretkey
+        run: |
+          cd server
+          npm install
+          npm test
 
-    - name: Run Tests
-      run: npm test
+      - name: Install and Test Frontend
+        run: |
+          cd client
+          npm install
+          npm test
